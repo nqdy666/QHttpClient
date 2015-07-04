@@ -1,0 +1,53 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'net.qjzd'
+version = '0.0.1'
+
+repositories {
+    mavenCentral()
+}
+
+compileJava {
+  sourceCompatibility = 1.7
+  targetCompatibility = 1.7
+}
+
+jar	{
+	manifest {
+		attributes 'Implementation-Title':	'Qjzd HttpClient'
+		attributes 'Implementation-Group': group
+		attributes 'Implementation-Version': version
+	}
+}
+ 
+dependencies {
+    compile (
+        [group: 'com.alibaba', name: 'fastjson', version: '1.2.6'],
+        [group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'],
+        [group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.1'],
+        [group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5']
+    )
+    testCompile (
+    )
+}
+
+task copyMainJars(type: Copy) {
+  from configurations.runtime
+  into 'lib/main'
+}
+
+task copyTestJars(type: Copy) {
+  from configurations.testRuntime
+  into 'lib/test'
+}
+
+task mBuild {
+}
+mBuild.dependsOn  build, copyMainJars, copyTestJars
+
+task mClean(dependsOn: clean, type: Delete) {
+	delete 'lib'
+}
+
+defaultTasks 'mClean', 'mBuild'
