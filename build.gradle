@@ -32,6 +32,16 @@ dependencies {
     )
 }
 
+task javadocJar(type: Jar, dependsOn: javadoc) {
+  classifier = 'javadoc'
+  from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+  from sourceSets.main.allSource
+  classifier = 'sources'
+}
+
 task copyMainJars(type: Copy) {
   from configurations.runtime
   into 'lib/main'
@@ -48,6 +58,12 @@ mBuild.dependsOn  build, copyMainJars, copyTestJars
 
 task mClean(dependsOn: clean, type: Delete) {
 	delete 'lib'
+}
+
+artifacts {
+  archives jar
+  archives javadocJar
+  archives sourcesJar
 }
 
 defaultTasks 'mClean', 'mBuild'
